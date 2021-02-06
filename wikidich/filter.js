@@ -1,0 +1,1 @@
+const a = document.querySelectorAll('.book-item'); Array.prototype.slice.call(document.querySelectorAll('.book-stats-box')).map((ele, i) => { if (!ele['children'][0]['children'][1].textContent.match(/[mk]/)) {a[i].remove()}});
