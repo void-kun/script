@@ -488,7 +488,7 @@
               self.saveEbook($widget);
             }
           });
-      }, 1000);
+      }, 5000);
     },
 
     /**
@@ -745,41 +745,8 @@
     finaliseEpub: function (that, $widget) {
       var options = that.options;
 
-      that.fetchCoverImage(
-        options.ebook.corsAnywhere + options.ebook.cover,
-        that
-      );
       that.generateEpub(that, $widget);
       that._trigger('complete', null, that);
-    },
-
-    /**
-     * Update cover image via fetch API.
-     *
-     * @param {String} coverImg
-     * @param {Object} that
-     */
-    fetchCoverImage: function (coverImg, that) {
-      var options = that.options;
-
-      fetch(coverImg, options.xhr.cover)
-        .then(function (response) {
-          if (response.ok) {
-            return response.arrayBuffer();
-          }
-        })
-        .then(function (response) {
-          that.jepub.cover(response);
-          that._trigger('fetchCoverImage', null, {
-            this: that,
-            image: response,
-          });
-        })
-        .catch(function (error) {
-          console.error(error); //eslint-disable-line
-          coverImg = options.ebook.fallbackCover;
-          that.fetchCoverImage(coverImg, that);
-        });
     },
 
     /**
