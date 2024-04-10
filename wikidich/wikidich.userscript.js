@@ -4,7 +4,7 @@
 // @version      0.0.1
 // @description  try to take over the world!
 // @author       Zrik
-// @match        https://wikidich6.com/truyen/*
+// @match        https://truyenwikidich.net/truyen/*
 // @match        https://wikisach.net/truyen/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=wikidich3.com
 // @require      https://code.jquery.com/jquery-3.6.0.min.js
@@ -20,7 +20,7 @@
 (function ($, window, document) {
   "use strict";
 
-  let chapterTimeout = 2000;
+  let chapterTimeout = 1000;
 
   function main() {
     // default values
@@ -58,10 +58,10 @@
         .map(function (id) {
           var ch = $(this).find(".truncate");
           if (ch.attr("href")) {
-              return {
-                  pathname: ch.attr("href"),
-                  id: id + 1,
-              };
+            return {
+              pathname: ch.attr("href"),
+              id: id + 1,
+            };
           }
         })
         .get();
@@ -83,16 +83,18 @@
             const content = $(data).find("#bookContentBody").html();
             jepub.add(title, content);
             document.title = `[${currentChapter.id}] Download`;
-            console.log('Timeout: ' + chapterTimeout, 'for chapter: ' + title);
+            console.log("Timeout: " + chapterTimeout, "for chapter: " + title);
             // Shift the chapter loaded
             chapters.shift();
             loadChapter(location, chapters);
-            calcTimeout(-1000);
+            calcTimeout(-500);
           },
           error: function () {
-            console.log(`Error - increase timeout (1 second) : ${chapterTimeout} - reload this chapter`);
-            calcTimeout(5000);
-            loadChapter(location, chapters)
+            console.log(
+              `Error - increase timeout (1 second) : ${chapterTimeout} - reload this chapter`,
+            );
+            calcTimeout(2500);
+            loadChapter(location, chapters);
           },
         });
       }, chapterTimeout);
@@ -102,7 +104,7 @@
       jepub
         .generate("blob", function (metadata) {
           console.log(
-            "Đang nén <strong>" + metadata.percent.toFixed(2) + "%</strong>"
+            "Đang nén <strong>" + metadata.percent.toFixed(2) + "%</strong>",
           );
         })
         .then(function (epubZipContent) {
@@ -137,11 +139,13 @@
     }
 
     function calcTimeout(gap) {
-        if (gap < 0 && chapterTimeout <= 1000) {
-            chapterTimeout += 1000;
-        } else {
-            chapterTimeout += gap;
-        }
+      if (gap < 0 && chapterTimeout <= 500) {
+        chapterTimeout = 500;
+      } else if (gap >= 2500) {
+        chapterTimeout = gap;
+      } else {
+        chapterTimeout += gap;
+      }
     }
   }
 
