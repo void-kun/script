@@ -140,7 +140,7 @@
           },
           chapters: null,
           book_info: null,
-          download_timeout_max: 2500, // miliseconds
+          download_timeout_max: 1600, // miliseconds
           download_timeout_default: 200, // miliseconds
           download_timeout: 200, // miliseconds
           jepub: new jEpub(),
@@ -230,9 +230,7 @@
 
               // Shift the chapter loaded
               chapters.shift();
-              self.calc_timeout(
-                -(self.options.state.download_timeout_default / 2),
-              );
+              self.calc_timeout(-self.options.state.download_timeout_default);
               self.load_chapter_content();
             },
             error: function () {
@@ -286,10 +284,10 @@
         if (
           gap < 0 &&
           this.options.state.download_timeout <=
-            options.state.download_timeout_default
+            this.options.state.download_timeout_default
         ) {
           this.options.state.download_timeout =
-            options.state.download_timeout_default + 0;
+            this.options.state.download_timeout_default + 0;
         } else if (gap >= this.options.state.download_timeout_max) {
           this.options.state.download_timeout = gap;
         } else {
