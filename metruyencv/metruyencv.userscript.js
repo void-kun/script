@@ -221,7 +221,7 @@
               });
           }
 
-          return [chapters[0]];
+          return chapters;
       },
       load_chapter_content: function () {
         const self = this;
