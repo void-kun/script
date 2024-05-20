@@ -108,16 +108,16 @@
 
         return uuid;
       },
-      delay: function(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+      delay: function (ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
       },
 
       // logger
       _error: function (msg) {
-        console.error(`[${(new Date()).toUTCString()}] - [ERROR]: ${msg}`);
+        console.error(`[${new Date().toUTCString()}] - [ERROR]: ${msg}`);
       },
       _info: function (msg) {
-        console.info(`[${(new Date()).toUTCString()}] - [INFO]: ${msg}`);
+        console.info(`[${new Date().toUTCString()}] - [INFO]: ${msg}`);
       },
     });
 
@@ -125,7 +125,7 @@
     // ===================== Wikidich Downloader ======================
     // ================================================================
     $.widget("us.wikidichDownloader", $.us.downloader, {
-        options: {
+      options: {
         ui: {
           wrapper_class: ".control-btns",
           component: $("<a></a>", {
@@ -163,8 +163,8 @@
 
         // handle click event
         this.options.ui.component.one("click", (event) => {
-            event.preventDefault();
-            this.download_click(event, this);
+          event.preventDefault();
+          this.download_click(event, this);
         });
       },
       download_click: async function (event, self) {
@@ -193,29 +193,32 @@
         let number_pagination = $(".volume-list .pagination").length;
         let total_chapter = [];
 
+        number_pagination = number_pagination < 1 ? 1 : number_pagination;
         for (let i = 0; i < number_pagination; i++) {
-            loadBookIndex(501 * i, 501, false);
+          loadBookIndex(501 * i, 501, false);
 
-            await this.delay(2000);
-            let chapters = this.load_chapter_name();
-            total_chapter.push(...chapters.filter((chapter) => chapter !== undefined));
+          await this.delay(2000);
+          let chapters = this.load_chapter_name();
+          total_chapter.push(
+            ...chapters.filter((chapter) => chapter !== undefined),
+          );
         }
 
         return total_chapter;
       },
-      load_chapter_name: function() {
-          let chapters = $(".chapter-name")
+      load_chapter_name: function () {
+        let chapters = $(".chapter-name")
           .map(function (id) {
-              const ch = $(this).find(".truncate");
-              if (ch.attr("href")) {
-                  return {
-                      pathname: ch.attr("href"),
-                      id: id + 1,
-                  };
-              }
+            const ch = $(this).find(".truncate");
+            if (ch.attr("href")) {
+              return {
+                pathname: ch.attr("href"),
+                id: id + 1,
+              };
+            }
           })
           .get();
-          return chapters;
+        return chapters;
       },
       load_chapter_content: function () {
         const self = this;
@@ -230,7 +233,7 @@
             return;
           }
           let current_chapter = chapters[0];
-          self._info(current_chapter.pathname)
+          self._info(current_chapter.pathname);
           $.ajax({
             url: current_chapter.pathname,
             success: function (data) {
@@ -263,7 +266,7 @@
 
         state.jepub
           .generate("blob", function (metadata) {
-            console.log(metadata)
+            console.log(metadata);
           })
           .then(function (epubZipContent) {
             document.title = "[⇓] " + state.book_info.title;
@@ -297,8 +300,13 @@
         });
       },
       calc_timeout: function (gap) {
-        if (gap < 0 && this.options.state.download_timeout <= this.options.state.download_timeout_default) {
-          this.options.state.download_timeout = (this.options.state.download_timeout_default + 0);
+        if (
+          gap < 0 &&
+          this.options.state.download_timeout <=
+            this.options.state.download_timeout_default
+        ) {
+          this.options.state.download_timeout =
+            this.options.state.download_timeout_default + 0;
         } else if (gap >= this.options.state.download_timeout_max) {
           this.options.state.download_timeout = gap;
         } else {
@@ -308,6 +316,5 @@
     });
 
     $(this).wikidichDownloader();
-
   });
 })(jQuery, window, document);
