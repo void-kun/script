@@ -198,7 +198,7 @@
           loadBookIndex(501 * i, 501, false);
 
           await this.delay(2000);
-          let chapters = this.load_chapter_name();
+          let chapters = this.load_chapter_name(501 * i);
           total_chapter.push(
             ...chapters.filter((chapter) => chapter !== undefined),
           );
@@ -206,14 +206,14 @@
 
         return total_chapter;
       },
-      load_chapter_name: function () {
+      load_chapter_name: function (start_idx) {
         let chapters = $(".chapter-name")
           .map(function (id) {
             const ch = $(this).find(".truncate");
             if (ch.attr("href")) {
               return {
                 pathname: ch.attr("href"),
-                id: id + 1,
+                id: start_idx + id + 1,
               };
             }
           })
@@ -303,7 +303,7 @@
         if (
           gap < 0 &&
           this.options.state.download_timeout <=
-            this.options.state.download_timeout_default
+          this.options.state.download_timeout_default
         ) {
           this.options.state.download_timeout =
             this.options.state.download_timeout_default + 0;
